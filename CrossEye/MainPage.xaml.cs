@@ -95,5 +95,12 @@ namespace CrossEye
         {
             // Do something here
         }
+
+        void Swap_Click(object sender, EventArgs e)
+        {
+            Brush tmpBrush = leftRect.Fill;
+            leftRect.Fill = rightRect.Fill;
+            rightRect.Fill = tmpBrush;
+        }
     }
 }

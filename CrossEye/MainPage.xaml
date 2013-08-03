@@ -25,11 +25,15 @@
                                               Click="choose2_Click"/>
             </shell:ApplicationBar.MenuItems>
 
-            <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationIcon.png"
+            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/switch.png"
+                                            IsEnabled="True"
+                                            Text="swap"
+                                            Click="Swap_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/leftImg.png"
                                             IsEnabled="True"
                                             Text="left image"
                                             Click="button1_Click"/>
-            <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationIcon.png"
+            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/rightImg.png"
                                             IsEnabled="True"
                                             Text="right image"
                                             Click="button2_Click"/>
