@@ -30,68 +30,7 @@ namespace CrossEye
         public MainPage()
         {
             InitializeComponent();
-
-            InitializeCamera();
         }
-
-        #region camera
-
-        void InitializeCamera()
-        {
-            camera = new PhotoCamera(CameraType.Primary);
-            camera.CaptureImageAvailable += camera_CaptureImageAvailable;
-            camera.CaptureCompleted += camera_CaptureCompleted;
-
-            CameraButtons.ShutterKeyPressed += cameraButtons_ShutterKeyPressed;
-        }
-
-        void CleanUpCamera()
-        {
-            CameraButtons.ShutterKeyPressed -= cameraButtons_ShutterKeyPressed;
-            camera.CaptureImageAvailable -= camera_CaptureImageAvailable;
-            camera.CaptureCompleted -= camera_CaptureCompleted;
-            camera.Dispose();
-            camera = null;
-        }
-
-        private void cameraButtons_ShutterKeyPressed(object sender, EventArgs e)
-        {
-            camera.CaptureImage();
-        }
-
-        void camera_CaptureImageAvailable(object sender, ContentReadyEventArgs e)
-        {
-            Dispatcher.BeginInvoke(() =>
-            {
-                currentImage = PictureDecoder.DecodeJpeg(e.ImageStream);
-                if (capturingLeft)
-                {
-                    leftRect.Fill = new ImageBrush { ImageSource = currentImage };
-                }
-                else
-                {
-                    rightRect.Fill = new ImageBrush { ImageSource = currentImage };
-                }
-            });
-        }
-
-        void camera_CaptureCompleted(object sender, CameraOperationCompletedEventArgs e)
-        {
-            if (!e.Succeeded)
-            {
-                if (capturingLeft)
-                {
-                    leftRect.Fill = new ImageBrush { ImageSource = currentImage };
-                }
-                else
-                {
-                    rightRect.Fill = new ImageBrush { ImageSource = currentImage };
-                }
-            }
-            CleanUpCamera();
-        }
-
-        #endregion
 
         void button1_Click(object sender, EventArgs e)
         {
