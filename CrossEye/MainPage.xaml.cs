@@ -47,6 +47,22 @@ namespace CrossEye
             task.Show();
         }
 
+        void choose1_Click(object sender, EventArgs e)
+        {
+            capturingLeft = true;
+            var task = new PhotoChooserTask();
+            task.Completed += chooserTask_Completed;
+            task.Show();
+        }
+
+        void choose2_Click(object sender, EventArgs e)
+        {
+            capturingLeft = false;
+            var task = new PhotoChooserTask();
+            task.Completed += chooserTask_Completed;
+            task.Show();
+        }
+
         void chooserTask_Completed(object sender, PhotoResult e)
         {
             if (e.TaskResult == TaskResult.OK)

@@ -15,6 +15,16 @@
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
+
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem IsEnabled="True"
+                                              Text="choose left photo" 
+                                              Click="choose1_Click"/>
+                <shell:ApplicationBarMenuItem IsEnabled="True"
+                                              Text="choose right photo" 
+                                              Click="choose2_Click"/>
+            </shell:ApplicationBar.MenuItems>
+
             <shell:ApplicationBarIconButton IconUri="/Assets/ApplicationIcon.png"
                                             IsEnabled="True"
                                             Text="left image"
