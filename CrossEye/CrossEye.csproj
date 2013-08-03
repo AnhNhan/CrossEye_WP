@@ -123,7 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AppBar\edit.png" />
+    <Content Include="Assets\AppBar\leftImg.png" />
+    <Content Include="Assets\AppBar\rightImg.png" />
     <Content Include="Assets\AppBar\save.png" />
+    <Content Include="Assets\AppBar\switch.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
