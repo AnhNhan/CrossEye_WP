@@ -23,7 +23,6 @@ namespace CrossEye
     public partial class MainPage : PhoneApplicationPage
     {
         private WriteableBitmap currentImage;
-        private PhotoCamera camera;
         private bool capturingLeft;
 
         // Konstruktor
