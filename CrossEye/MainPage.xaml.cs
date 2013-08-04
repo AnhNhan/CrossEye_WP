@@ -23,6 +23,8 @@ namespace CrossEye
     public partial class MainPage : PhoneApplicationPage
     {
         private WriteableBitmap currentImage;
+        private WriteableBitmap leftImage;
+        private WriteableBitmap rightImage;
         private bool capturingLeft;
 
         // Konstruktor
@@ -33,32 +35,27 @@ namespace CrossEye
 
         void button1_Click(object sender, EventArgs e)
         {
-            capturingLeft = true;
-            var task = new CameraCaptureTask();
-            task.Completed += chooserTask_Completed;
-            task.Show();
+            imageClick(true, new CameraCaptureTask());
         }
 
         void button2_Click(object sender, EventArgs e)
         {
-            capturingLeft = false;
-            var task = new CameraCaptureTask();
-            task.Completed += chooserTask_Completed;
-            task.Show();
+            imageClick(false, new CameraCaptureTask());
         }
 
         void choose1_Click(object sender, EventArgs e)
         {
-            capturingLeft = true;
-            var task = new PhotoChooserTask();
-            task.Completed += chooserTask_Completed;
-            task.Show();
+            imageClick(true, new PhotoChooserTask());
         }
 
         void choose2_Click(object sender, EventArgs e)
         {
-            capturingLeft = false;
-            var task = new PhotoChooserTask();
+            imageClick(false, new PhotoChooserTask());
+        }
+
+        private void imageClick(bool left, ChooserBase<PhotoResult> task)
+        {
+            capturingLeft = left;
             task.Completed += chooserTask_Completed;
             task.Show();
         }
@@ -71,10 +68,12 @@ namespace CrossEye
 
                 if (capturingLeft)
                 {
+                    leftImage = currentImage;
                     leftRect.Fill = new ImageBrush { ImageSource = currentImage };
                 }
                 else
                 {
+                    rightImage = currentImage;
                     rightRect.Fill = new ImageBrush { ImageSource = currentImage };
                 }
             }
@@ -82,10 +81,12 @@ namespace CrossEye
             {
                 if (capturingLeft)
                 {
+                    leftImage = null;
                     leftRect.Fill = new SolidColorBrush(Colors.Gray);
                 }
                 else
                 {
+                    rightImage = null;
                     rightRect.Fill = new SolidColorBrush(Colors.Gray);
                 }
             }
@@ -93,7 +94,23 @@ namespace CrossEye
 
         void Save_Click(object sender, EventArgs e)
         {
-            // Do something here
+            WriteableBitmap finalImg = RenderFinalImage();
+            if (finalImg != null)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    finalImg.SaveJpeg(stream, currentImage.PixelWidth, currentImage.PixelHeight, 0, 100);
+                    stream.Seek(0, 0);
+                    var library = new MediaLibrary();
+                    Picture p = library.SavePicture("customphoto.jpg", stream);
+
+                    // TODO: Toast notification about saved picture
+                }
+            }
+            else
+            {
+                MessageBox.Show("You require both images!", "Saving failed", MessageBoxButton.OK);
+            }
         }
 
         void Swap_Click(object sender, EventArgs e)
@@ -101,6 +118,18 @@ namespace CrossEye
             Brush tmpBrush = leftRect.Fill;
             leftRect.Fill = rightRect.Fill;
             rightRect.Fill = tmpBrush;
+        }
+
+        WriteableBitmap RenderFinalImage()
+        {
+            if (leftImage == null || rightImage == null)
+                return null;
+
+            int width = leftImage.PixelWidth + rightImage.PixelWidth + 10;
+            int height = leftImage.PixelHeight;
+            WriteableBitmap finalImg = new WriteableBitmap(width, height);
+
+            return finalImg;
         }
     }
 }
