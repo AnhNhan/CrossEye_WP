@@ -97,12 +97,17 @@ namespace CrossEye
             WriteableBitmap finalImg = RenderFinalImage();
             if (finalImg != null)
             {
+                MessageBox.Show("Saving not supported", "Sorry, we can't save yet, I'm too lazy to program it :(", MessageBoxButton.OK);
+                return;
+
+                // TODO: Ask about filename
+                string fileName = "customphoto.jpg";
                 using (var stream = new MemoryStream())
                 {
                     finalImg.SaveJpeg(stream, currentImage.PixelWidth, currentImage.PixelHeight, 0, 100);
                     stream.Seek(0, 0);
                     var library = new MediaLibrary();
-                    Picture p = library.SavePicture("customphoto.jpg", stream);
+                    Picture p = library.SavePicture(fileName, stream);
 
                     // TODO: Toast notification about saved picture
                 }
@@ -128,6 +133,8 @@ namespace CrossEye
             int width = leftImage.PixelWidth + rightImage.PixelWidth + 10;
             int height = leftImage.PixelHeight;
             WriteableBitmap finalImg = new WriteableBitmap(width, height);
+
+            // TODO: Actually create the image
 
             return finalImg;
         }
