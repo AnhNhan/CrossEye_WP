@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 using Windows.Storage;
 using CrossEye.Resources;
 
@@ -62,23 +63,49 @@ namespace CrossEye
 
         void chooserTask_Completed(object sender, PhotoResult e)
         {
-            if (e.TaskResult == TaskResult.OK)
+            // User cancelled, keep current stuff by not progressing
+            if (e.TaskResult == TaskResult.Cancel)
             {
-                currentImage = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
+                return;
+            }
 
+            bool error = false;
+            try
+            {
+                // First try jpg
+                currentImage = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
+            }
+            catch (Exception exc)
+            {
+                // Then try png
+                try
+                {
+                }
+                catch (Exception exc2)
+                {
+                    error = true;
+                }
+            }
+
+            if (e.TaskResult == TaskResult.OK && !error)
+            {
                 if (capturingLeft)
                 {
+                    resizeRectangle(leftRect, ContentPanel, currentImage);
                     leftImage = currentImage;
                     leftRect.Fill = new ImageBrush { ImageSource = currentImage };
                 }
                 else
                 {
+                    resizeRectangle(rightRect, ContentPanel, currentImage);
                     rightImage = currentImage;
                     rightRect.Fill = new ImageBrush { ImageSource = currentImage };
                 }
             }
             else
             {
+                MessageBox.Show("I'm sorry, but the file " + e.OriginalFileName + " does not look like an image to me.", "Something went wrong :(", MessageBoxButton.OK);
+                currentImage = null;
                 if (capturingLeft)
                 {
                     leftImage = null;
@@ -90,6 +117,37 @@ namespace CrossEye
                     rightRect.Fill = new SolidColorBrush(Colors.Gray);
                 }
             }
+        }
+
+        void resizeRectangle(Rectangle rectangle, Grid grid, WriteableBitmap bitmap)
+        {
+            Size bitmapSize = new Size(bitmap.PixelWidth, bitmap.PixelWidth);
+            Size gridSize = new Size(grid.ActualWidth, grid.ActualHeight);
+            Size rectOldSize = new Size(gridSize.Width / 2 - rectangle.Margin.Left - rectangle.Margin.Right, gridSize.Height);
+            Size rectNewSize = new Size();
+
+            double ratio = bitmapSize.Width / bitmapSize.Height;
+            double sizeRatio = bitmapSize.Height / grid.ActualHeight;
+            bool isHighPhoto = bitmapSize.Height > bitmapSize.Width;
+            bool isOverlyHigh = gridSize.Height * ratio > gridSize.Height;
+
+            if (isHighPhoto)
+            {
+                rectNewSize.Height = gridSize.Height;
+                rectNewSize.Width = rectNewSize.Height * ratio;
+            }
+            else
+            {
+                rectNewSize.Width = gridSize.Width / 2 - rectangle.Margin.Left - rectangle.Margin.Right;
+                rectNewSize.Height = rectNewSize.Width * ratio;
+            }
+
+            rectangle.MaxWidth = rectNewSize.Width;
+            rectangle.MaxHeight = rectNewSize.Height;
+            rectangle.MinWidth = rectNewSize.Width;
+            rectangle.MinHeight = rectNewSize.Height;
+
+            dudu.Text = string.Format("r-w: {0}\tr-h: {1}\nb-w: {2}\tb-h: {3}", rectNewSize.Width, rectNewSize.Height, bitmapSize.Width, bitmapSize.Height);
         }
 
         void Save_Click(object sender, EventArgs e)

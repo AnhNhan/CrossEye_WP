@@ -63,6 +63,7 @@
             <Rectangle x:Name="leftRect" Fill="#FFB4B4B4" Margin="0,0,5,0" DoubleTap="button1_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Rectangle x:Name="rightRect" Fill="#FFB4B4B4" DoubleTap="button2_Click" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
+        <TextBlock x:Name="dudu" HorizontalAlignment="Left" Margin="330,6,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="394" Height="66"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
